@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORSTI BUSINESS — Algorithmic Trading Solutions</title>
+<style>
+  :root{
+    --bg:#0a0f1c;
+    --panel:#111a2e;
+    --accent:#00d4a6;
+    --accent2:#4da6ff;
+    --text:#e8eef7;
+    --muted:#8fa3c0;
+    --line:rgba(255,255,255,.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background-color:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+  }
+  /* ---- Algorithmic trading background ---- */
+  .bg-logo{
+    position:fixed;inset:0;z-index:-3;pointer-events:none;
+    background:url("atlante1.jpg") no-repeat center 120px;
+    background-size:min(72vh,640px);
+    opacity:.22;
+    filter:saturate(.8);
+  }
+  .bg-layer{
+    position:fixed;inset:0;z-index:-2;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(0,212,166,.12), transparent 60%),
+      radial-gradient(900px 500px at 10% 110%, rgba(77,166,255,.12), transparent 60%),
+      var(--bg);
+  }
+  .bg-candles{
+    position:fixed;inset:0;z-index:-1;opacity:.16;pointer-events:none;
+  }
+  .grid-overlay{
+    position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size:56px 56px;
+    mask-image:radial-gradient(circle at 50% 30%, black 30%, transparent 85%);
+  }
+
+  .container{max-width:1100px;margin:0 auto;padding:0 24px;}
+
+  /* ---- Header ---- */
+  header{
+    position:relative;
+    padding:40px 0 30px;
+    border-bottom:1px solid var(--line);
+    background:rgba(10,15,28,.6);
+    backdrop-filter:blur(6px);
+  }
+  .header-inner{
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+    flex-wrap:wrap;
+  }
+  .brand h1{
+    font-size:2rem;letter-spacing:.14em;font-weight:800;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .brand p{color:var(--muted);letter-spacing:.28em;text-transform:uppercase;font-size:.78rem;margin-top:4px;}
+  .dev-card{
+    display:flex;align-items:center;gap:16px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:12px 18px;
+  }
+  .dev-photo{
+    width:72px;height:72px;border-radius:50%;object-fit:cover;
+    border:2px solid var(--accent2);
+    box-shadow:0 0 16px rgba(77,166,255,.4);
+    flex-shrink:0;
+  }
+  .tri-avatar{width:78px;height:73px;flex-shrink:0;}
+  .tri-avatar .t1{fill:rgba(0,212,166,.07);stroke:var(--accent);stroke-width:2;filter:drop-shadow(0 0 8px rgba(0,212,166,.5));}
+  .tri-avatar .t2{fill:rgba(77,166,255,.08);stroke:var(--accent2);stroke-width:1.6;}
+  .tri-avatar .t3{fill:rgba(0,212,166,.12);stroke:var(--accent);stroke-width:1.2;}
+  .tri-avatar .tri-name{fill:var(--text);font-size:15px;font-weight:800;letter-spacing:.1em;}
+  .tri-avatar .tri-sub{fill:var(--accent);font-size:11px;font-weight:700;letter-spacing:.28em;}
+  .dev-card .name{font-weight:700;font-size:1.05rem;}
+  .dev-card .role{color:var(--muted);font-size:.85rem;}
+  .dev-card .role span{color:var(--accent);}
+
+  nav{
+    margin-top:22px;
+    display:flex;gap:26px;flex-wrap:wrap;
+  }
+  nav a{color:var(--muted);text-decoration:none;font-size:.92rem;letter-spacing:.05em;transition:color .2s;}
+  nav a:hover{color:var(--accent);}
+
+  /* ---- Sections ---- */
+  section{padding:64px 0;}
+  h2{
+    font-size:1.6rem;margin-bottom:8px;letter-spacing:.04em;
+  }
+  h2::before{content:"▸ ";color:var(--accent);}
+  .subtitle{color:var(--muted);margin-bottom:36px;max-width:720px;}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;}
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:26px;
+    transition:transform .25s, border-color .25s, box-shadow .25s;
+  }
+  .card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(0,212,166,.45);
+    box-shadow:0 12px 32px rgba(0,0,0,.45);
+  }
+  .card h3{color:var(--accent);margin-bottom:10px;font-size:1.1rem;}
+  .card p{color:var(--muted);font-size:.94rem;}
+
+  .chips{display:flex;flex-wrap:wrap;gap:12px;}
+  .chip{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:10px 22px;
+    font-weight:600;font-size:.92rem;letter-spacing:.03em;
+    transition:all .2s;
+  }
+  .chip:hover{border-color:var(--accent);color:var(--accent);box-shadow:0 0 14px rgba(0,212,166,.25);}
+
+  /* ---- Hero ---- */
+  .hero{text-align:center;padding:90px 0 70px;}
+  .hero h2{font-size:1.7rem;margin-bottom:12px;}
+  .hero h2::before{content:"";}
+  .hero .subtitle{margin:0 auto 30px;font-size:1.08rem;}
+  .hero .cta{
+    display:inline-block;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    color:#04121a;font-weight:700;
+    padding:14px 40px;border-radius:999px;text-decoration:none;
+    letter-spacing:.05em;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .hero .cta:hover{transform:scale(1.05);box-shadow:0 8px 30px rgba(0,212,166,.4);}
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:30px 0 40px;
+    color:var(--muted);font-size:.85rem;
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Animated algorithmic-trading background -->
+<div class="bg-logo"></div>
+<div class="bg-layer"></div>
+<svg class="bg-candles" preserveAspectRatio="none" viewBox="0 0 1200 800">
+  <defs>
+    <linearGradient id="chartLine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#00d4a6"/>
+      <stop offset="1" stop-color="#4da6ff"/>
+    </linearGradient>
+  </defs>
+  <g id="candles"></g>
+  <polyline id="algoLine" fill="none" stroke="url(#chartLine)" stroke-width="2.5"
+    points="0,620 80,580 160,600 240,520 320,540 400,470 480,500 560,430 640,450 720,380 800,410 880,340 960,370 1040,300 1120,330 1200,260"/>
+</svg>
+<div class="grid-overlay"></div>
+
+<script>
+  // Generate candlesticks for the background
+  (function(){
+    const g = document.getElementById('candles');
+    const price = t => 620 - 300*Math.max(0,Math.min(1,t)) + 40*Math.sin(t*9);
+    let s = 42;
+    for(let i=0;i<26;i++){
+      const x = 30 + i*46;
+      const o = 620 - i*11 - 40*Math.sin(i*1.3);
+      const c = o + (Math.sin(i*2.1)*46);
+      const up = c < o;
+      const col = up ? '#00d4a6' : '#ff5d73';
+      const y = Math.min(o,c), h = Math.max(Math.abs(o-c), 10);
+      g.innerHTML += `<line x1="${x}" y1="${y-22}" x2="${x}" y2="${y+h+22}" stroke="${col}" stroke-width="1.4"/>`;
+      g.innerHTML += `<rect x="${x-11}" y="${y}" width="22" height="${h}" rx="2" fill="${col}" opacity=".75"/>`;
+    }
+  })();
+</script>
+
+<header>
+  <div class="container header-inner">
+    <div class="brand">
+      <h1>FORSTI BUSINESS</h1>
+      <p>Algorithmic Trading Solutions</p>
+    </div>
+    <div class="dev-card">
+      <img class="dev-photo" src="jyves-torres.gif" alt="J-Yves Torres">
+      <svg class="tri-avatar" viewBox="0 0 140 130" aria-label="J-Yves Torres">
+        <polygon class="t1" points="70,5 132,120 8,120"/>
+        <polygon class="t2" points="70,22 117,112 23,112"/>
+        <polygon class="t3" points="70,40 102,105 38,105"/>
+        <text x="70" y="88" text-anchor="middle" class="tri-name">J-YVES</text>
+        <text x="70" y="103" text-anchor="middle" class="tri-sub">TORRES</text>
+      </svg>
+      <div>
+        <div class="name">J-Yves Torres</div>
+        <div class="role">Lead Developer &amp; <span>Quantitative Engineer</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <nav>
+      <a href="#expertise">Expertise</a>
+      <a href="#platforms">Platforms</a>
+      <a href="#languages">Languages</a>
+      <a href="#methodology">Methodology</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container">
+    <h2>Engineering Trading Strategies</h2>
+    <p class="subtitle">
+      Algorithmic trading systems, Expert Advisors and rigorous backtesting —
+      designed, coded and validated by FORSTI BUSINESS.
+    </p>
+    <a class="cta" href="mailto:jean_yves_torres@yahoo.com">Start Your Project</a>
+  </div>
+</section>
+
+<section id="expertise">
+  <div class="container">
+    <h2>Our Expertise</h2>
+    <p class="subtitle">End-to-end algorithmic trading development, from idea to live deployment.</p>
+    <div class="cards">
+      <div class="card">
+        <h3>Algorithmic Calculations</h3>
+        <p>Custom quantitative engines: signal processing, portfolio optimization, risk modeling and statistical arbitrage, engineered for speed and reliability.</p>
+      </div>
+      <div class="card">
+        <h3>Expert Advisors (EAs)</h3>
+        <p>Fully automated trading robots with advanced position management — trailing stops, breakeven logic, money management and multi-timeframe filtering.</p>
+      </div>
+      <div class="card">
+        <h3>Backtesting &amp; Optimization</h3>
+        <p>Rigorous historical validation with walk-forward analysis, Monte Carlo simulation and robustness testing to separate real edge from curve-fitting.</p>
+      </div>
+      <div class="card">
+        <h3>Custom Indicators &amp; Scripts</h3>
+        <p>Tailored technical indicators, dashboard panels and utility scripts that extend your platform's native capabilities.</p>
+      </div>
+      <div class="card">
+        <h3>Strategy Conversion &amp; Porting</h3>
+        <p>Migrate strategies between platforms and languages — MQL4 to MQL5, NinjaTrader to MetaTrader, prototype in Python, deploy in native C.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="platforms">
+  <div class="container">
+    <h2>Supported Platforms</h2>
+    <p class="subtitle">We develop natively for the industry's leading algorithmic trading environments.</p>
+    <div class="chips">
+      <div class="chip">MetaTrader 4</div>
+      <div class="chip">MetaTrader 5</div>
+      <div class="chip">NinjaTrader</div>
+      <div class="chip">cTrader</div>
+    </div>
+  </div>
+</section>
+
+<section id="languages">
+  <div class="container">
+    <h2>Development Languages</h2>
+    <p class="subtitle">The right tool for each layer of your trading stack.</p>
+    <div class="chips">
+      <div class="chip">C (native)</div>
+      <div class="chip">Python</div>
+      <div class="chip">MQL4</div>
+      <div class="chip">MQL5</div>
+    </div>
+  </div>
+</section>
+
+<section id="methodology">
+  <div class="container">
+    <h2>Our Methodology</h2>
+    <p class="subtitle">A disciplined, transparent process — no black boxes.</p>
+    <div class="cards">
+      <div class="card"><h3>1. Specification</h3><p>We formalize your trading idea into a precise, testable rule set.</p></div>
+      <div class="card"><h3>2. Prototyping</h3><p>Rapid Python-based validation of the concept on historical data.</p></div>
+      <div class="card"><h3>3. Native Development</h3><p>Production-grade implementation in MQL4/MQL5, NinjaScript, cAlgo or C.</p></div>
+      <div class="card"><h3>4. Validation</h3><p>Extensive backtesting, forward testing on demo, and robustness analysis.</p></div>
+      <div class="card"><h3>5. Deployment &amp; Support</h3><p>Live launch with monitoring, maintenance and iterative improvement.</p></div>
+    </div>
+  </div>
+</section>
+
+
+
+<footer>
+  <div class="container" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;width:100%;">
+    <span>© 2026 FORSTI BUSINESS — All rights reserved.</span>
+    <span>Developed by J-Yves Torres</span>
+  </div>
+</footer>
+
+</body>
+</html>
