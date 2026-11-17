@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FORSTI BUSINESS | J-YVES TORRES - Financial Software Developer</title>
+    <meta name="description" content="FORSTI BUSINESS: Development of Expert Advisors, backtests, and financial tools in native C for MT4, MT5, NinjaTrader, and cTrader.">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #042a2b;
+            --bg-secondary: rgba(6, 39, 40, 0.7);
+            --bg-card: rgba(8, 45, 46, 0.55);
+            --accent-green: #00ff88;
+            --accent-blue: #7dd3fc;
+            --text-primary: #e5f6f5;
+            --text-secondary: #9cc4c4;
+            --border-color: #1f4a4a;
+        }
+
+        body {
+            font-family: 'Courier New', 'Consolas', monospace;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== Background: chart + logo watermark ===== */
+        .chart-bg {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.8rem 2rem;
+            padding-right: 180px;
+            position: sticky; top: 0; z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        nav { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.4rem; font-weight: bold; color: var(--accent-green); text-decoration: none; letter-spacing: 1px; }
+        .logo::before { content: '> '; color: var(--accent-blue); }
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; transition: color 0.3s; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--accent-green); }
+
+        /* ===== Photo fixed in the top-right corner, larger, above everything ===== */
+        .corner-avatar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--accent-green);
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.45), 0 8px 24px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .corner-avatar:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 35px rgba(0, 255, 136, 0.6), 0 12px 32px rgba(0, 0, 0, 0.6);
+        }
+
+        .hero {
+            max-width: 1200px; margin: 0 auto; padding: 4rem 2rem;
+            display: grid; grid-template-columns: 1fr 300px; gap: 3rem;
+            align-items: center; min-height: 70vh;
+        }
+        .hero-content h1 { font-size: 3rem; margin-bottom: 0.2rem; color: var(--text-primary); line-height: 1.1; }
+        .hero-content .tagline { font-size: 1.3rem; color: var(--accent-green); margin-bottom: 0.8rem; letter-spacing: 1px; }
+        .hero-subtitle { font-size: 1.1rem; color: var(--accent-blue); margin-bottom: 1.5rem; font-weight: bold; }
+        .hero-content p { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 2rem; max-width: 600px; }
+        .cta-button { display: inline-block; padding: 0.8rem 2rem; background-color: var(--accent-green); color: var(--bg-primary); text-decoration: none; font-weight: bold; border-radius: 4px; transition: transform 0.2s, box-shadow 0.2s; }
+        .cta-button:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3); }
+
+        .hero-image { display: flex; justify-content: flex-end; }
+        .triangles { width: 260px; height: 260px; filter: drop-shadow(0 0 25px rgba(125, 211, 252, 0.25)); animation: spin 90s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .services { padding: 4rem 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; font-size: 2rem; margin-bottom: 3rem; color: var(--accent-blue); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .card { background-color: var(--bg-card); padding: 2rem; border-radius: 8px; border: 1px solid var(--border-color); transition: border-color 0.3s, transform 0.3s; backdrop-filter: blur(6px); }
+        .card:hover { border-color: var(--accent-green); transform: translateY(-5px); }
+        .card h3 { color: var(--accent-green); margin-bottom: 1rem; font-size: 1.2rem; }
+        .card p { color: var(--text-secondary); font-size: 0.95rem; }
+        
+        /* ===== Algorithm list styling ===== */
+        .algo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .algo-list li {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            padding: 0.3rem 0;
+            padding-left: 1.2rem;
+            position: relative;
+        }
+        .algo-list li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: var(--accent-blue);
+            font-weight: bold;
+        }
+
+        .tech-stack { padding: 4rem 2rem; text-align: center; }
+        .stack-list { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.5rem; margin-top: 2rem; }
+        .stack-item { background-color: var(--bg-card); padding: 0.8rem 1.5rem; border-radius: 4px; border: 1px solid var(--border-color); color: var(--accent-blue); font-weight: bold; }
+
+        footer { background-color: var(--bg-secondary); border-top: 1px solid var(--border-color); padding: 2rem; text-align: center; color: var(--text-secondary); font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .hero { grid-template-columns: 1fr; text-align: center; gap: 2rem; }
+            .hero-image { justify-content: center; }
+            .nav-links { display: none; }
+            header { padding-right: 2rem; }
+            .corner-avatar { width: 90px; height: 90px; top: 10px; right: 10px; }
+            .hero-content h1 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Background SVG: teal gradient + grid + curves (masked) + logo watermark ===== -->
+    <svg class="chart-bg" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+        <defs>
+            <radialGradient id="bgGrad" cx="50%" cy="35%" r="80%">
+                <stop offset="0%" stop-color="#0a3a3a"/>
+                <stop offset="100%" stop-color="#042a2b"/>
+            </radialGradient>
+            <mask id="avoidLogo">
+                <rect x="0" y="0" width="1200" height="800" fill="white"/>
+                <rect x="310" y="110" width="580" height="580" rx="30" fill="black"/>
+            </mask>
+        </defs>
+
+        <rect x="0" y="0" width="1200" height="800" fill="url(#bgGrad)"/>
+
+        <!-- grid -->
+        <g stroke="#7dd3fc" stroke-opacity="0.08" stroke-width="1">
+            <line x1="0" y1="100" x2="1200" y2="100"/><line x1="0" y1="200" x2="1200" y2="200"/>
+            <line x1="0" y1="300" x2="1200" y2="300"/><line x1="0" y1="400" x2="1200" y2="400"/>
+            <line x1="0" y1="500" x2="1200" y2="500"/><line x1="0" y1="600" x2="1200" y2="600"/>
+            <line x1="0" y1="700" x2="1200" y2="700"/>
+            <line x1="100" y1="0" x2="100" y2="800"/><line x1="200" y1="0" x2="200" y2="800"/>
+            <line x1="300" y1="0" x2="300" y2="800"/><line x1="400" y1="0" x2="400" y2="800"/>
+            <line x1="500" y1="0" x2="500" y2="800"/><line x1="600" y1="0" x2="600" y2="800"/>
+            <line x1="700" y1="0" x2="700" y2="800"/><line x1="800" y1="0" x2="800" y2="800"/>
+            <line x1="900" y1="0" x2="900" y2="800"/><line x1="1000" y1="0" x2="1000" y2="800"/>
+            <line x1="1100" y1="0" x2="1100" y2="800"/>
+        </g>
+
+        <!-- algorithm / equity curves (masked away from the logo zone) -->
+        <g mask="url(#avoidLogo)">
+            <path d="M0,650 C150,600 250,700 350,520 C450,360 550,560 650,420 C750,300 850,480 950,300 C1050,160 1150,260 1200,180"
+                  fill="none" stroke="#7dd3fc" stroke-width="2.5" stroke-opacity="0.7"/>
+            <path d="M0,720 C180,700 300,640 420,660 C560,680 640,520 780,540 C920,560 1020,400 1200,360"
+                  fill="none" stroke="#9ecbff" stroke-width="2" stroke-opacity="0.5"/>
+            <path d="M0,560 C120,580 220,460 340,480 C480,500 560,360 700,380 C840,400 940,260 1080,240 C1140,230 1180,200 1200,160"
+                  fill="none" stroke="#7dd3fc" stroke-width="2" stroke-opacity="0.45" stroke-dasharray="6 6"/>
+        </g>
+
+        <!-- ===== Logo watermark ===== -->
+        <image href="logo_forsti.png" x="340" y="140" width="520" height="520"
+               preserveAspectRatio="xMidYMid slice" opacity="0.32"/>
+    </svg>
+
+    <!-- ===== Photo fixed in the top-right corner, above everything ===== -->
+    <img src="profile.jpg" alt="J-Yves Torres" class="corner-avatar">
+
+    <header>
+        <nav>
+            <a href="#" class="logo">FORSTI BUSINESS</a>
+            <ul class="nav-links">
+                <li><a href="#services">Services</a></li>
+                <li><a href="#stack">Tech Stack</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>FORSTI BUSINESS</h1>
+            <div class="tagline">Trading Solutions</div>
+            <div class="hero-subtitle">Lead Developer: J-YVES TORRES</div>
+            <p>Expert Advisors, ultra-fast backtesting engines, and algorithmic trading tools built for institutional-grade performance.</p>
+            <a href="#contact" class="cta-button">Initialize_Project()</a>
+        </div>
+        <div class="hero-image">
+            <svg class="triangles" viewBox="0 0 200 200">
+                <polygon points="100,15 185,175 15,175" fill="none" stroke="#7dd3fc" stroke-width="2" stroke-opacity="0.9"/>
+                <polygon points="100,40 165,160 35,160" fill="none" stroke="#00ff88" stroke-width="2" stroke-opacity="0.7"/>
+                <polygon points="100,65 145,145 55,145" fill="none" stroke="#7dd3fc" stroke-width="2" stroke-opacity="0.6"/>
+                <polygon points="100,88 128,130 72,130" fill="none" stroke="#00ff88" stroke-width="2" stroke-opacity="0.5"/>
+                <polygon points="100,108 114,118 86,118" fill="none" stroke="#7dd3fc" stroke-width="2" stroke-opacity="0.45"/>
+            </svg>
+        </div>
+    </section>
+
+    <section id="services" class="services">
+        <div class="container">
+            <h2 class="section-title">Core Services</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>Expert Advisors & Automation</h3>
+                    <p>Custom algorithmic trading bots for MetaTrader 4/5, NinjaTrader, and cTrader. Fully optimized for low latency and high reliability.</p>
+                </div>
+                <div class="card">
+                    <h3>Native C Backtesting Engines</h3>
+                    <p>Standalone backtesting frameworks written in native C. Process millions of ticks in seconds, bypassing the limitations of standard platform testers.</p>
+                </div>
+                <div class="card">
+                    <h3>Challenges PropFirms</h3>
+                    <p>Strategies: BreakOut, Inverse Fair Value Gaps (IFVG), Ornstein, Enveloppes, OB, FractalDimension ...</p>
+                </div>
+                <div class="card">
+                    <h3>Dividend Arbitrage Strategies</h3>
+                    <p>Specialized automation for Dividend Capture strategies, including ex-date calendar integration, tax calculations, and automated hedging.</p>
+                </div>
+                <!-- ===== New card: Algorithms realization ===== -->
+                <div class="card">
+                    <h3>Algorithms Realization</h3>
+                    <ul class="algo-list">
+                        <li>Inverse Hodrick-Prescott</li>
+                        <li>PCA LSTM</li>
+                        <li>Grid Bots</li>
+                        <li>Adaptive Grid Hedge</li>
+                        <li>MNQ/MES Scalping</li>
+                        <li>PolyFit Regression</li>
+                        <li>Burg Prediction</li>
+                        <li>Kernels ...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="stack" class="tech-stack">
+        <div class="container">
+            <h2 class="section-title">Technical Stack</h2>
+            <div class="stack-list">
+                <div class="stack-item">Native C / C++</div>
+                <div class="stack-item">MQL4 / MQL5</div>
+                <div class="stack-item">C# (NinjaScript / cTrader)</div>
+                <div class="stack-item">Python (Data Analysis)</div>
+                <div class="stack-item">DLL Integration</div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <p>© 2026 FORSTI BUSINESS. All systems operational.</p>
+        <p style="margin-top: 0.5rem; color: var(--accent-green);">jean_yves_torres@yahoo.com</p>
+    </footer>
+
+</body>
+</html>
